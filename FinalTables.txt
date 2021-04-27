@@ -1,0 +1,101 @@
+mysql> create table Student
+    -> (
+    -> S_ID int(10) Primary Key Auto_Increment,
+    -> F_Name varchar(20),
+    -> L_Name varchar(20),
+    -> Email varchar(50) UNIQUE,
+    -> City varchar(20),
+    -> Contact bigint(10)
+    -> );
+Query OK, 0 rows affected (0.49 sec)
+
+mysql> create table S_Courses
+    -> (
+    -> S_ID int(11),
+    -> Course_ID varchar(20)
+    -> );
+Query OK, 0 rows affected (0.35 sec)
+
+mysql> create table Tutor
+    -> (
+    -> T_ID int(11) Primary Key Auto_Increment,
+    -> F_Name varchar(20) ,
+    -> L_Name varchar(20),
+    -> Email varchar(20) UNIQUE,
+    -> Contact bigint(10),
+    -> City varchar(10),
+    -> Qualification varchar(30)
+    -> );
+Query OK, 0 rows affected (0.55 sec)
+
+mysql> create table T_Courses
+    -> (
+    -> T_ID int(11),
+    -> Course_ID varchar(20)
+    -> );
+Query OK, 0 rows affected (0.36 sec)
+
+mysql> create table Coaching 
+       ( 
+       C_ID int(11) Primary Key Auto_increment, 
+       Name varchar(40), 
+       Email varchar(20) UNIQUE, 
+       Address varchar(50), 
+       Contact bigint(10) );
+Query OK, 0 rows affected (0.64 sec)
+
+mysql> create table C_Courses
+    -> (
+    -> C_ID int(11),
+    -> Course_ID varchar(20)
+    -> );
+Query OK, 0 rows affected (0.40 sec)s
+
+mysql> create table CoursePool
+    -> (
+    -> Class int(11),
+    -> Subject varchar(20),
+    -> Course_ID varchar(10) Primary Key
+    -> );
+Query OK, 0 rows affected (0.35 sec)
+
+mysql> create table Login
+    -> (
+    -> Email varchar(50) UNIQUE,
+    -> Password varchar(15),
+    -> Usertype varchar(15)
+    -> );
+Query OK, 0 rows affected (0.39 sec)
+
+  //Procedures and Triggers
+create PROCEDURE VanishFromCoursePool(IN course varchar(10))
+       BEGIN
+       IF ( select COUNT(Course_ID) from C_Courses
+       where Course_ID = course ) = 0
+       THEN
+       IF (select COUNT(Course_ID) from T_Courses
+        where Course_ID = course) = 0
+      THEN 
+        delete from CoursePool
+      where Course_ID = course;
+       END IF;
+       END IF;
+       END //
+
+create TRIGGER after_c_courses_delete 
+after delete ON C_Courses 
+for each row
+Begin 
+    call VanishFromCoursePool(@COURSE); 
+END$$
+
+create TRIGGER after_t_courses_delete 
+after delete ON T_Courses 
+for each row 
+Begin 
+   call VanishFromCoursePool(@COURSE); 
+END$$
+
+
+
+

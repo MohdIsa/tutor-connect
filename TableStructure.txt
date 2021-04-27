@@ -1,0 +1,121 @@
+mysql> describe Student;
++---------+-------------+------+-----+---------+----------------+
+| Field   | Type        | Null | Key | Default | Extra          |
++---------+-------------+------+-----+---------+----------------+
+| S_ID    | int(10)     | NO   | PRI | NULL    | auto_increment |
+| F_Name  | varchar(20) | YES  |     | NULL    |                |
+| L_Name  | varchar(20) | YES  |     | NULL    |                |
+| Email   | varchar(50) | YES  | UNI | NULL    |                |
+| City    | varchar(20) | YES  |     | NULL    |                |
+| Contact | bigint(10)  | YES  |     | NULL    |                |
++---------+-------------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> describe S_Courses;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| S_ID      | int(11)     | YES  |     | NULL    |       |
+| Course_ID | varchar(20) | YES  | MUL | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> describe Tutor;
++---------------+-------------+------+-----+---------+----------------+
+| Field         | Type        | Null | Key | Default | Extra          |
++---------------+-------------+------+-----+---------+----------------+
+| T_ID          | int(11)     | NO   | PRI | NULL    | auto_increment |
+| F_Name        | varchar(20) | YES  |     | NULL    |                |
+| L_Name        | varchar(20) | YES  |     | NULL    |                |
+| Email         | varchar(50) | YES  | UNI | NULL    |                |
+| Phone         | int(10)     | YES  |     | NULL    |                |
+| City          | varchar(30) | YES  |     | NULL    |                |
+| Qualification | varchar(30) | YES  |     | NULL    |                |
+| Experience    | int(11)     | YES  |     | NULL    |                |
++---------------+-------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+mysql> describe T_Courses;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| T_ID      | int(11)     | YES  |     | NULL    |       |
+| Course_ID | varchar(20) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> describe Coaching;
++---------------+-------------+------+-----+---------+----------------+
+| Field         | Type        | Null | Key | Default | Extra          |
++---------------+-------------+------+-----+---------+----------------+
+| C_ID          | int(11)     | NO   | PRI | NULL    | auto_increment |
+| Name          | varchar(40) | YES  |     | NULL    |                |
+| Email         | varchar(50) | YES  | UNI | NULL    |                |
+| City          | varchar(30) | YES  |     | NULL    |                |
+| Contact       | bigint(10)  | YES  |     | NULL    |                |
+| Establishment | int(11)     | YES  |     | NULL    |                |
++---------------+-------------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> describe C_Courses;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| C_ID      | int(11)     | YES  |     | NULL    |       |
+| Course_ID | varchar(20) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> describe CoursePool;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| class     | int(11)     | YES  |     | NULL    |       |
+| subject   | varchar(20) | YES  |     | NULL    |       |
+| Course_ID | varchar(10) | NO   | PRI |         |       |
++-----------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> describe login;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| Email    | varchar(50) | YES  | UNI | NULL    |       |
+| Password | varchar(10) | YES  |     | NULL    |       |
+| Usertype | varchar(15) | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+//trigger on C_Courses
+create trigger c_courses_delete 
+after delete on C_Courses 
+for each row 
+begin 
+delete from CoursePool 
+where Course_ID not in (select distinct Course_ID from C_Courses) 
+AND Course_ID not in (select distinct Course_ID from T_Courses); 
+end$$
+
+//trigger on T_Courses
+create trigger t_courses_delete 
+after delete on T_Courses 
+for each row 
+begin 
+delete from CoursePool 
+where Course_ID not in (select distinct Course_ID from C_Courses) 
+AND Course_ID not in (select distinct Course_ID from T_Courses); 
+end$$
+
+
+
+
+SELECT * from Tutor a inner join T_Courses b 
+on a.T_ID = b.T_ID
+where a.City in (select City from Student where S_ID = studentId);
+
+SELECT * from Coaching a inner join C_Courses b 
+on a.C_ID = b.C_ID
+where a.City in (select City from Student where S_ID = studentId);
+
+/student/<%=info.S_ID%>/delete
+/student/<%=info.S_ID%>/resetprefs
