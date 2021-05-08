@@ -1,0 +1,69 @@
+## Table Student
+create table Student
+(
+S_ID int(10) Primary Key Auto_Increment,
+F_Name varchar(20),
+L_Name varchar(20),
+Email varchar(50) UNIQUE,
+City varchar(20),
+Contact bigint(10)
+);
+
+## Table Student Courses
+create table S_Courses
+(
+S_ID int(11),
+Course_ID varchar(20)
+);
+
+## Table Tutor
+create table Tutor
+(
+T_ID int(11) Primary Key Auto_Increment,
+F_Name varchar(20) ,
+L_Name varchar(20),
+Email varchar(20) UNIQUE,
+Contact bigint(10),
+City varchar(10),
+Qualification varchar(30)
+);
+
+## Table Tutor Courses
+create table T_Courses
+(
+T_ID int(11),
+Course_ID varchar(20)
+);
+
+## Table Coaching
+create table Coaching 
+( 
+C_ID int(11) Primary Key Auto_increment, 
+Name varchar(40), 
+Email varchar(20) UNIQUE, 
+Address varchar(50), 
+Contact bigint(10) 
+);
+
+## Table Coaching Courses
+create table C_Courses
+(
+C_ID int(11),
+Course_ID varchar(20)
+);
+
+## Table Course CoursePool
+create table CoursePool
+(
+Class int(11),
+Subject varchar(20),
+Course_ID varchar(10) Primary Key
+);
+
+##Login Table
+create table Login
+(
+Email varchar(50) UNIQUE,
+Password varchar(15),
+Usertype varchar(15)
+);
